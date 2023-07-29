@@ -1,58 +1,45 @@
 package okhttp;
 
-import com.google.gson.Gson;
 import dto.*;
+import helpers.Helper;
 import okhttp3.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-public class AddNewContact {
+public class AddNewContact implements Helper {
 
-    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    Gson gson = new Gson();
-    OkHttpClient client = new OkHttpClient();
-
+    String endpoint = "contacts";
 
     @Test
 
 public void addNewContact() throws IOException {
 
+ContactDTO contactDTO = ContactDTO.builder()
+        .name("Neo")
+        .lastName("John")
+        .email("john@gmail.com")
+        .phone("12244444444")
+        .address("localhost")
+        .description("New Contact")
+        .build();
+RequestBody requestBody =RequestBody.create(gson.toJson(contactDTO), JSON);
 
-        AddRequestDTO addRequestDTO = new AddRequestDTO().builder()
-                .name("Dan")
-                .lastName("Levi")
-                .email("wer@gmail.com")
-                .phone("3434344444")
-                .address("London")
-                .description("The new contact")
-                .build();
-
-        RequestBody addRequestBody = RequestBody.create(gson.toJson(addRequestDTO), JSON);
-
-        Request request = new Request.Builder()
-                .url("https://contactapp-telran-backend.herokuapp.com/v1/user/login/usernamepassword")
-                .post(addRequestBody)
+Request request = new Request.Builder()
+                .url(BASE_URI + "/" + PATH + "/" + endpoint)
+                .addHeader(authHeader, PATH)
+                .post(requestBody)
                 .build();
 
 
         Response response = client.newCall(request).execute();
-
-        if (response.isSuccessful()) {
-
-            AddResponseDTO responseDTO = gson.fromJson(response.body().string(), AddResponseDTO.class);
-            System.out.println(responseDTO.getMassage());
-            System.out.println("Response code is: " + response.code());
-            Assert.assertTrue(response.isSuccessful());
-
-        } else {
-            System.out.println("Response code is: " + response.code());
-            ErrorDTO errorDTO = gson.fromJson(response.body().string(), ErrorDTO.class);
-            System.out.println(errorDTO.getStatus() + " " + errorDTO.getMessage() + " " + errorDTO.getError());
-            Assert.assertTrue(response.isSuccessful());
-        }
-
+        ContactResponseDTO contactResponseDTO = gson.fromJson(response.body().string(), ContactResponseDTO.class);
+        Assert.assertTrue(response.isSuccessful());
+        String message = contactResponseDTO.getMessage();
+        System.out.println("Message: " + message);
+        String id = message.substring(message.lastIndexOf(" ") + 1);
+        System.out.println(id);
     }
 }
 

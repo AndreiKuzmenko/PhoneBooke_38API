@@ -20,4 +20,7 @@ public class AuthRequestDTO {
 
     String password;
 
+    public boolean getToken() {
+        return false;
+    }
 }
