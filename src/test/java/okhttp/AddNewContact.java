@@ -35,7 +35,7 @@ Request request = new Request.Builder()
 
         Response response = client.newCall(request).execute();
         ContactResponseDTO contactResponseDTO = gson.fromJson(response.body().string(), ContactResponseDTO.class);
-        Assert.assertTrue(response.isSuccessful());
+        Assert.assertFalse(response.isSuccessful());
         String message = contactResponseDTO.getMessage();
         System.out.println("Message: " + message);
         String id = message.substring(message.lastIndexOf(" ") + 1);

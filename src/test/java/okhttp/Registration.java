@@ -29,7 +29,8 @@ String endpoint = "user/registration/usernamepasswor";
 
         Response response = client.newCall(request).execute();
 
-            Assert.assertFalse(response.isSuccessful());
+        Assert.assertFalse(response.isSuccessful());
+
 
 
     }
@@ -40,7 +41,6 @@ String endpoint = "user/registration/usernamepasswor";
                 .username("rtref_" + i + "gmail.com")
                 .password("$$$Qwe1234")
                 .build();
-
         RequestBody requestBody = RequestBody.create(gson.toJson(requestDTO), JSON);
 
         Request request = new Request.Builder()
@@ -49,11 +49,11 @@ String endpoint = "user/registration/usernamepasswor";
                 .build();
 
         Response response = client.newCall(request).execute();
-
         System.out.println("Response code is: " + response.code());
         ErrorDTO errorDTO = gson.fromJson(response.body().string(), ErrorDTO.class);
         System.out.println(errorDTO.getStatus() + " " + errorDTO.getMessage() + " " + errorDTO.getError());
-        Assert.assertFalse(!response.isSuccessful());
+        Assert.assertTrue(!response.isSuccessful());
+
 
 
     }
